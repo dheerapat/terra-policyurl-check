@@ -8,7 +8,9 @@ const client = new CosmosClient(connectionString);
 async function main() {
     const { database } = await client.databases.createIfNotExists({ id: "rever-mdw-insurance-db-dev" });
     const { container } = await database.containers.createIfNotExists({ id: "rever-mdw-insurance-policy-dev" });
+    console.log("Fetching data.")
     const { resources: query } = await container.items.query("SELECT * FROM c").fetchAll();
+    console.log("Data fetched.")
     let data: any[] = [];
 
     for (let i = 0; i < 10; i++) {
@@ -23,6 +25,7 @@ async function main() {
                 const timeoutId = setTimeout(() => controller.abort(), 3000);
 
                 const fetchPromise = fetch(Url, { signal: controller.signal });
+                console.log("Checking url data #" + (i + 1))
                 const response = await fetchPromise;
 
                 clearTimeout(timeoutId); // Clear the timeout
